@@ -2,6 +2,7 @@
  *
  * A P E X 2 E B S
  * Copyright (C) 2026 christopher.ho@symbolthree.com
+ * All Rights Reserved, http://www.symbolthree.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

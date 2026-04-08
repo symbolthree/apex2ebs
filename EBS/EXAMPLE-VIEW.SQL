@@ -5,7 +5,7 @@ SELECT fpo.profile_option_id,
 	   fpot.language                     language,
 	   fpov.level_id                     level_id,
 	   'SITE'                            level_name,
-	   NULL                              level_value_id,			   
+	   NULL                              level_value_id,
 	   ''                                level_value,
 	   fpov.profile_option_value         option_value,
 	   fpov.creation_date                creation_date,
@@ -32,7 +32,7 @@ SELECT fpo.profile_option_id,
 	   fpot.language                     language,
 	   fpov.level_id                     level_id,
 	   'APPLICATION'                     level_name,
-	   fa.application_id                 level_value_id,			   
+	   fa.application_id                 level_value_id,
 	   fa.application_name               level_value,
 	   fpov.profile_option_value         option_value,
 	   fpov.creation_date                creation_date,
@@ -61,7 +61,7 @@ SELECT fpo.profile_option_id,
 	   fpot.language                     language,
 	   fpov.level_id                     level_id,
 	   'RESPONSIBILITY'                  level_name,
-	   frt.responsibility_id             level_value_id,			   			   
+	   frt.responsibility_id             level_value_id,
 	   frt.responsibility_name           level_value,
 	   fpov.profile_option_value         option_value,
 	   fpov.creation_date                creation_date,
@@ -91,7 +91,7 @@ SELECT fpo.profile_option_id,
 	   fpot.language                     language,
 	   fpov.level_id                     level_id,
 	   'USER'                            level_name,
-	   fu.user_id                        level_value_id,		   			   
+	   fu.user_id                        level_value_id,
 	   fu.user_name                      level_value,
 	   fpov.profile_option_value         option_value,
 	   fpov.creation_date                creation_date,
@@ -107,11 +107,11 @@ SELECT fpo.profile_option_id,
  WHERE     1 = 1
 	   AND fpot.profile_option_name = fpo.profile_option_name
 	   AND fpo.profile_option_id = fpov.profile_option_id
-	   AND fpov.created_by = fu.user_id
+	   AND fpov.created_by = fu2.user_id
 	   AND fpov.level_id = 10004
-	   AND fpov.level_value = fu2.user_id
+	   AND fpov.level_value = fu.user_id
 	   AND fpov.last_updated_by = fu3.user_id
-/	   
+/
 
 CREATE OR REPLACE VIEW A2E_USER_RESPS_V AS
 select
@@ -170,7 +170,7 @@ select
    --and resptl.language = 'US'
    and fu4.user_id = furgd.created_by
    and fu5.user_id = furgd.last_updated_by
-/   
+/
    --and fu1.user_id=       1002926
    --and resp.RESPONSIBILITY_KEY = 'BIS_FIS'
    --and resptl.responsibility_name like 'Vision%Payable%'
@@ -188,23 +188,23 @@ select papf1.person_id
      , papf1.email_address
      , papf1.sex
      , floor((sysdate-papf1.DATE_OF_BIRTH)/365) age
-     , ( select PHONE_NUMBER from per_phones 
-         where parent_id=papf1.person_id 
-           and parent_table='PER_ALL_PEOPLE_F' 
+     , ( select PHONE_NUMBER from per_phones
+         where parent_id=papf1.person_id
+           and parent_table='PER_ALL_PEOPLE_F'
            and phone_type='W1'
            and rownum < 2) phone_no,
       (SELECT name FROM per_jobs WHERE job_id = paaf.job_id) job_name,
       (SELECT name FROM per_all_positions WHERE position_id = paaf.position_id) position_name,
       (SELECT location_code FROM hr_locations_all WHERE location_id = paaf.location_id) employee_location,
       mgr.employee_number supervisior_number,
-      mgr.full_name supervisior_name           
+      mgr.full_name supervisior_name
      from per_all_people_f papf1
         , hr_all_organization_units haou
         , per_all_assignments_f paaf
         , (select person_id, employee_number, full_name
                   from per_all_people_f papf2
                   where 1=1
-                    and effective_start_date = (select max(effective_start_date) from per_all_people_f where person_id = papf2.person_id)) mgr        
+                    and effective_start_date = (select max(effective_start_date) from per_all_people_f where person_id = papf2.person_id)) mgr
  where 1=1
    --and papf1.person_id=12
    and papf1.effective_start_date = (select max(effective_start_date) from per_all_people_f where person_id=papf1.person_id)
@@ -234,7 +234,7 @@ SELECT F.OPERATING_UNIT
      , A.START_DATE_ACTIVE
      , A.END_DATE_ACTIVE
      , A.LIST_LINE_ID
-	 , E.LANGUAGE 
+	 , E.LANGUAGE
   FROM QP_LIST_LINES         A
      , QP_PRICING_ATTRIBUTES B
      , MTL_SYSTEM_ITEMS_B    C
@@ -242,18 +242,18 @@ SELECT F.OPERATING_UNIT
      , QP_LIST_HEADERS_TL    E
 	 , ORG_ORGANIZATION_DEFINITIONS F
  WHERE 1=1
-   --AND A.LIST_HEADER_ID     = 1021  
-   --AND C.INVENTORY_ITEM_ID  = DECODE(NVL(:P211_ITEM,-1), -1, C.INVENTORY_ITEM_ID, :P211_ITEM)  
-   --AND ((NVL(:P211_PRICE_LIST,-1) <> -1) OR (NVL(:P211_ITEM,-1) <> -1))  
-   --AND C.ORGANIZATION_ID    = 204  
-   AND A.PRICE_BREAK_TYPE_CODE IS NULL  
-   AND B.LIST_LINE_ID       = A.LIST_LINE_ID  
-   AND B.PRODUCT_ATTR_VALUE = TO_CHAR(C.INVENTORY_ITEM_ID)  
-   AND B.PRODUCT_ATTRIBUTE_CONTEXT = 'ITEM'   
-   AND A.LIST_HEADER_ID     = D.LIST_HEADER_ID  
-   AND D.LIST_HEADER_ID     = E.LIST_HEADER_ID  
+   --AND A.LIST_HEADER_ID     = 1021
+   --AND C.INVENTORY_ITEM_ID  = DECODE(NVL(:P211_ITEM,-1), -1, C.INVENTORY_ITEM_ID, :P211_ITEM)
+   --AND ((NVL(:P211_PRICE_LIST,-1) <> -1) OR (NVL(:P211_ITEM,-1) <> -1))
+   --AND C.ORGANIZATION_ID    = 204
+   AND A.PRICE_BREAK_TYPE_CODE IS NULL
+   AND B.LIST_LINE_ID       = A.LIST_LINE_ID
+   AND B.PRODUCT_ATTR_VALUE = TO_CHAR(C.INVENTORY_ITEM_ID)
+   AND B.PRODUCT_ATTRIBUTE_CONTEXT = 'ITEM'
+   AND A.LIST_HEADER_ID     = D.LIST_HEADER_ID
+   AND D.LIST_HEADER_ID     = E.LIST_HEADER_ID
    AND E.LANGUAGE           = 'US'
-   AND A.ARITHMETIC_OPERATOR = 'UNIT_PRICE'  
+   AND A.ARITHMETIC_OPERATOR = 'UNIT_PRICE'
    AND A.PRICE_BY_FORMULA_ID IS NULL
    AND F.ORGANIZATION_ID = C.ORGANIZATION_ID
    /
